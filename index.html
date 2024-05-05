@@ -15,7 +15,7 @@
         <h1 class="text-3xl font-bold mb-6">Trouve mon prénom campagnarde</h1>
 
         <!-- État du pendu -->
-        <div id="hangman-state" class="mb-6 text-lg">Conseil : commence par les voyelles chou à la crème</div>
+        <div id="hangman-state" class="mb-6 text-lg">Force à toi crème anglaise</div>
 
         <!-- Mot à deviner -->
         <div id="word-display" class="mb-6 text-2xl font-semibold"></div>
@@ -23,14 +23,14 @@
         <!-- Formulaire de saisie de lettre -->
         <form id="guess-form" class="mb-6">
             <input type="text" id="guess-input" class="border border-gray-300 p-2 rounded" maxlength="1" required />
-            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Deviner</button>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Devine</button>
         </form>
 
         <!-- Lettres devinées -->
         <div id="guessed-letters" class="mb-6 text-lg">Lettres devinées: </div>
 
         <!-- Bouton pour recommencer -->
-        <button id="restart-btn" class="bg-green-500 text-white px-4 py-2 rounded">Recommencer</button>
+        <button id="restart-btn" class="bg-green-500 text-white px-4 py-2 rounded">Recommence</button>
     </div>
 
     <!-- JavaScript pour le jeu du pendu -->
@@ -68,9 +68,9 @@
                     displayWord(); // Mettez à jour l'affichage du mot à deviner
                 } else {
                     remainingGuesses--;
-                    document.getElementById("hangman-state").textContent = `Mauvaises devinettes restantes: ${remainingGuesses}`;
+                    document.getElementById("hangman-state").textContent = `Fait gaffe il t'en reste : ${remainingGuesses} chances`;
                     if (remainingGuesses === 0) {
-                        alert(`Vous avez perdu! Le mot était: ${wordToGuess}`);
+                        alert(`T'as perdu! T'es Nul !! Recommence !!`);
                         restartGame();
                     }
                 }
@@ -81,7 +81,7 @@
 
             // Vérifiez si le joueur a gagné
             if (guessedWord.join('') === wordToGuess) {
-                alert("Vous avez gagné! Félicitations!");
+                alert("Bien vu t'es smart !");
                 restartGame();
             }
 
@@ -95,7 +95,7 @@
             guessedLetters = [];
             remainingGuesses = 6;
             displayWord();
-            document.getElementById("hangman-state").textContent = "Essayez de deviner le mot!";
+            document.getElementById("hangman-state").textContent = "Je sais que t'as perdu mais recommence !";
             document.getElementById("guessed-letters").textContent = "Lettres devinées: ";
         }
 
