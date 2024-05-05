@@ -12,7 +12,7 @@
 
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="container mx-auto text-center">
-        <h1 class="text-3xl font-bold mb-6">Trouve mon prénom campagnarde</h1>
+        <h1 class="text-3xl font-bold mb-6">Trouve les noms de mes frères et de ma soeur</h1>
 
         <!-- État du pendu -->
         <div id="hangman-state" class="mb-6 text-lg">Force à toi crème anglaise</div>
@@ -35,80 +35,110 @@
 
     <!-- JavaScript pour le jeu du pendu -->
     <script>
-        // Variables globales
-        const wordToGuess = "morgan"; // Mot à deviner
-        let guessedWord = Array(wordToGuess.length).fill('_'); // Mot deviné
-        let guessedLetters = []; // Lettres devinées
-        let remainingGuesses = 6;
+       // Variables globales
+    const names = ["rayan", "michael", "michel", "romane", "marc-lenny", "william"]; // Prénoms à deviner
+    let guessedNames = []; // Prénoms devinés
+    let wordToGuess = ""; // Mot à deviner
+    let guessedWord = [];
+    let guessedLetters = [];
+    let remainingGuesses = 6;
 
-        // Fonction pour afficher l'état du mot à deviner
-        function displayWord() {
-            const display = guessedWord.join(' ');
-            document.getElementById("word-display").textContent = display;
+    // Fonction pour choisir un prénom aléatoire et initialiser guessedWord
+    function chooseRandomName() {
+        // Choisir un prénom aléatoire qui n'a pas encore été deviné
+        let availableNames = names.filter(name => !guessedNames.includes(name));
+        if (availableNames.length === 0) {
+            // Tous les prénoms ont été devinés
+            alert("Je sais que t'as pas trouvé Marc-Lenny du premier coup mais bvvv ");
+            // Désactivez le jeu ou affichez un message final ici
+            document.getElementById("guess-form").style.display = "none";
+            document.getElementById("restart-btn").style.display = "none";
+            return;
         }
+        const randomIndex = Math.floor(Math.random() * availableNames.length);
+        wordToGuess = availableNames[randomIndex];
+        guessedWord = Array(wordToGuess.length).fill('_');
+    }
 
-        // Fonction pour gérer les devinettes de lettres
-        function handleGuess(event) {
-            event.preventDefault();
-            const input = document.getElementById("guess-input");
-            const guess = input.value.toLowerCase(); // Convertir l'entrée en minuscules
+    // Fonction pour afficher l'état du mot à deviner
+    function displayWord() {
+        const display = guessedWord.join(' ');
+        document.getElementById("word-display").textContent = display;
+    }
 
-            // Vérifiez si la lettre a déjà été devinée
-            if (!guessedLetters.includes(guess)) {
-                guessedLetters.push(guess);
+    // Fonction pour gérer les devinettes de lettres
+    function handleGuess(event) {
+        event.preventDefault();
+        const input = document.getElementById("guess-input");
+        const guess = input.value.toLowerCase(); // Convertir l'entrée en minuscules
 
-                // Vérifiez si la lettre est dans le mot à deviner
-                if (wordToGuess.includes(guess)) {
-                    // Mettre à jour guessedWord avec les indices où la lettre devinée apparaît dans wordToGuess
-                    for (let i = 0; i < wordToGuess.length; i++) {
-                        if (wordToGuess[i] === guess) {
-                            guessedWord[i] = guess;
-                        }
-                    }
-                    displayWord(); // Mettez à jour l'affichage du mot à deviner
-                } else {
-                    remainingGuesses--;
-                    document.getElementById("hangman-state").textContent = `Fait gaffe il t'en reste : ${remainingGuesses} chances`;
-                    if (remainingGuesses === 0) {
-                        alert(`T'as perdu! T'es Nul !! Recommence !!`);
-                        restartGame();
+        // Vérifiez si la lettre a déjà été devinée
+        if (!guessedLetters.includes(guess)) {
+            guessedLetters.push(guess);
+
+            // Vérifiez si la lettre est dans le mot à deviner
+            if (wordToGuess.includes(guess)) {
+                // Mettre à jour guessedWord avec les indices où la lettre devinée apparaît dans wordToGuess
+                for (let i = 0; i < wordToGuess.length; i++) {
+                    if (wordToGuess[i] === guess) {
+                        guessedWord[i] = guess;
                     }
                 }
+                displayWord(); // Mettez à jour l'affichage du mot à deviner
+            } else {
+                remainingGuesses--;
+                document.getElementById("hangman-state").textContent = `Fait gaffe il t'en reste : ${remainingGuesses} chances`;
+                if (remainingGuesses === 0) {
+                    alert(`T'as perdu! T'es Nul !! Recommence !!`);
+                    restartGame();
+                }
             }
-
-            // Affichez les lettres devinées
-            document.getElementById("guessed-letters").textContent = `Lettres devinées: ${guessedLetters.join(", ")}`;
-
-            // Vérifiez si le joueur a gagné
-            if (guessedWord.join('') === wordToGuess) {
-                alert("Bien vu t'es smart !");
-                restartGame();
-            }
-
-            // Réinitialiser l'input
-            input.value = "";
         }
 
-        // Fonction pour recommencer le jeu
-        function restartGame() {
-            guessedWord = Array(wordToGuess.length).fill('_');
-            guessedLetters = [];
-            remainingGuesses = 6;
+        // Affichez les lettres devinées
+        document.getElementById("guessed-letters").textContent = `Lettres devinées: ${guessedLetters.join(", ")}`;
+
+        // Vérifiez si le joueur a gagné
+        if (guessedWord.join('') === wordToGuess) {
+            alert("Ok passe à la suite !");
+            // Ajoutez le prénom deviné à guessedNames
+            guessedNames.push(wordToGuess);
+            restartGame();
+        }
+
+        // Réinitialiser l'input
+        input.value = "";
+    }
+
+    // Fonction pour recommencer le jeu
+    function restartGame() {
+        guessedWord = Array(wordToGuess.length).fill('_');
+        guessedLetters = [];
+        remainingGuesses = 6;
+        // Choisir un prénom aléatoire qui n'a pas encore été deviné
+        chooseRandomName();
+        if (wordToGuess) {
             displayWord();
             document.getElementById("hangman-state").textContent = "Je sais que t'as perdu mais recommence !";
             document.getElementById("guessed-letters").textContent = "Lettres devinées: ";
         }
+    }
 
-        // Initialisation du jeu
-        document.addEventListener("DOMContentLoaded", () => {
+    // Initialisation du jeu
+    document.addEventListener("DOMContentLoaded", () => {
+        // Choisir un prénom aléatoire au début
+        chooseRandomName();
+        if (wordToGuess) {
             displayWord();
+        }
 
-            // Attachez la fonction de gestion des devinettes au formulaire
-            document.getElementById("guess-form").addEventListener("submit", handleGuess);
+        // Attachez la fonction de gestion des devinettes au formulaire
+        document.getElementById("guess-form").addEventListener("submit", handleGuess);
 
-            // Attachez la fonction de recommencement au bouton
-            document.getElementById("restart-btn").addEventListener("click", restartGame);
-        });
+        // Attachez la fonction de recommencement au bouton
+        document.getElementById("restart-btn").addEventListener("click", restartGame);
+    });
+
     </script>
 </body>
 </html>
