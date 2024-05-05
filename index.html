@@ -12,7 +12,7 @@
 
 <body class="flex items-center justify-center min-h-screen bg-gray-100">
     <div class="container mx-auto text-center">
-        <h1 class="text-3xl font-bold mb-6">Trouve les noms de mes frères et de ma soeur</h1>
+        <h1 class="text-3xl font-bold mb-6">Trouve les noms de mes frères et de ma soeur la Campagnarde</h1>
 
         <!-- État du pendu -->
         <div id="hangman-state" class="mb-6 text-lg">Force à toi crème anglaise</div>
@@ -98,12 +98,12 @@
         // Affichez les lettres devinées
         document.getElementById("guessed-letters").textContent = `Lettres devinées: ${guessedLetters.join(", ")}`;
 
-        // Vérifiez si le joueur a gagné
         if (guessedWord.join('') === wordToGuess) {
             alert("Ok passe à la suite !");
             // Ajoutez le prénom deviné à guessedNames
             guessedNames.push(wordToGuess);
-            restartGame();
+            // Appelez restartGame() avec isWin = true
+            restartGame(true);
         }
 
         // Réinitialiser l'input
@@ -111,18 +111,25 @@
     }
 
     // Fonction pour recommencer le jeu
-    function restartGame() {
-        guessedWord = Array(wordToGuess.length).fill('_');
-        guessedLetters = [];
-        remainingGuesses = 6;
-        // Choisir un prénom aléatoire qui n'a pas encore été deviné
-        chooseRandomName();
-        if (wordToGuess) {
-            displayWord();
-            document.getElementById("hangman-state").textContent = "Je sais que t'as perdu mais recommence !";
-            document.getElementById("guessed-letters").textContent = "Lettres devinées: ";
+    // Fonction pour recommencer le jeu
+function restartGame(isWin = false) {
+    guessedWord = Array(wordToGuess.length).fill('_');
+    guessedLetters = [];
+    remainingGuesses = 6;
+    // Choisir un prénom aléatoire qui n'a pas encore été deviné
+    chooseRandomName();
+    if (wordToGuess) {
+        displayWord();
+        // Si isWin est vrai, le joueur a trouvé le prénom correctement
+        if (isWin) {
+            document.getElementById("hangman-state").textContent = "Tu le trouveras pas celui là !!";
+        } else {
+            // Sinon, le joueur a perdu
+            document.getElementById("hangman-state").textContent = "Je sais que t'as perdu mais recommence!";
         }
+        document.getElementById("guessed-letters").textContent = "Lettres devinées: ";
     }
+}
 
     // Initialisation du jeu
     document.addEventListener("DOMContentLoaded", () => {
