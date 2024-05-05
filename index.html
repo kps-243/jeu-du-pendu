@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Jeu du pendu</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="flex items-center justify-center min-h-screen bg-gray-100">
+    <div class="container mx-auto text-center">
+        <h1 class="text-3xl font-bold mb-6">Trouve mon prénom campagnarde</h1>
+
+        <!-- État du pendu -->
+        <div id="hangman-state" class="mb-6 text-lg">Conseil : commence par les voyelles chou à la crème</div>
+
+        <!-- Mot à deviner -->
+        <div id="word-display" class="mb-6 text-2xl font-semibold"></div>
+
+        <!-- Formulaire de saisie de lettre -->
+        <form id="guess-form" class="mb-6">
+            <input type="text" id="guess-input" class="border border-gray-300 p-2 rounded" maxlength="1" required />
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded">Deviner</button>
+        </form>
+
+        <!-- Lettres devinées -->
+        <div id="guessed-letters" class="mb-6 text-lg">Lettres devinées: </div>
+
+        <!-- Bouton pour recommencer -->
+        <button id="restart-btn" class="bg-green-500 text-white px-4 py-2 rounded">Recommencer</button>
+    </div>
+
+    <!-- JavaScript pour le jeu du pendu -->
+    <script>
+        // Variables globales
+        const wordToGuess = "morgan"; // Mot à deviner
+        let guessedWord = Array(wordToGuess.length).fill('_'); // Mot deviné
+        let guessedLetters = []; // Lettres devinées
+        let remainingGuesses = 6;
+
+        // Fonction pour afficher l'état du mot à deviner
+        function displayWord() {
+            const display = guessedWord.join(' ');
+            document.getElementById("word-display").textContent = display;
+        }
+
+        // Fonction pour gérer les devinettes de lettres
+        function handleGuess(event) {
+            event.preventDefault();
+            const input = document.getElementById("guess-input");
+            const guess = input.value.toLowerCase(); // Convertir l'entrée en minuscules
+
+            // Vérifiez si la lettre a déjà été devinée
+            if (!guessedLetters.includes(guess)) {
+                guessedLetters.push(guess);
+
+                // Vérifiez si la lettre est dans le mot à deviner
+                if (wordToGuess.includes(guess)) {
+                    // Mettre à jour guessedWord avec les indices où la lettre devinée apparaît dans wordToGuess
+                    for (let i = 0; i < wordToGuess.length; i++) {
+                        if (wordToGuess[i] === guess) {
+                            guessedWord[i] = guess;
+                        }
+                    }
+                    displayWord(); // Mettez à jour l'affichage du mot à deviner
+                } else {
+                    remainingGuesses--;
+                    document.getElementById("hangman-state").textContent = `Mauvaises devinettes restantes: ${remainingGuesses}`;
+                    if (remainingGuesses === 0) {
+                        alert(`Vous avez perdu! Le mot était: ${wordToGuess}`);
+                        restartGame();
+                    }
+                }
+            }
+
+            // Affichez les lettres devinées
+            document.getElementById("guessed-letters").textContent = `Lettres devinées: ${guessedLetters.join(", ")}`;
+
+            // Vérifiez si le joueur a gagné
+            if (guessedWord.join('') === wordToGuess) {
+                alert("Vous avez gagné! Félicitations!");
+                restartGame();
+            }
+
+            // Réinitialiser l'input
+            input.value = "";
+        }
+
+        // Fonction pour recommencer le jeu
+        function restartGame() {
+            guessedWord = Array(wordToGuess.length).fill('_');
+            guessedLetters = [];
+            remainingGuesses = 6;
+            displayWord();
+            document.getElementById("hangman-state").textContent = "Essayez de deviner le mot!";
+            document.getElementById("guessed-letters").textContent = "Lettres devinées: ";
+        }
+
+        // Initialisation du jeu
+        document.addEventListener("DOMContentLoaded", () => {
+            displayWord();
+
+            // Attachez la fonction de gestion des devinettes au formulaire
+            document.getElementById("guess-form").addEventListener("submit", handleGuess);
+
+            // Attachez la fonction de recommencement au bouton
+            document.getElementById("restart-btn").addEventListener("click", restartGame);
+        });
+    </script>
+</body>
+</html>
